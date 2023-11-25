@@ -1,10 +1,12 @@
+## Overview
 ```python
 responses = asyncio.run(
-    llm.complete(["What is the capital of France?"], models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
-)```
+    llm.complete(["What is the capital of France?"],
+    models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
+)
+```
 
-## Overview
-llm.py a very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
+llm.py: A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
 
 ## Features
 * Multiple Model Support: llm.py supports various models, including OpenAI's GPT-3.5, Replicate's Mistral, and Anthropic's Claude.
