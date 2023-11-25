@@ -1,15 +1,19 @@
 ## Overview
 ```python
 responses = asyncio.run(
-    llm.complete(["What is the capital of France?", "What is 2+2?"],
-    models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
+    llm.complete(["What model are you?", "What is 2+2?"],
+    models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b', 'anthropic/claude-2'])
 )
 # print(responses)
-[{"prompt":"What is the capital of France?",
-  "responses":
-        {"openai/gpt-3.5-turbo": "Paris",
-        "replicate/mistral-7b": "Paris"}
-    }, ...]
+[
+    {
+        "prompt": "what model are you?",
+        "responses": {
+            "openai/gpt-3.5-turbo": "I am an AI language model created by OpenAI. Specifically, I am based on GPT-3 (Generative Pre-trained Transformer 3).",
+            "replicate/mistral-7b": "I am Mistral, a large language model trained by Mistral AI.",
+            "anthropic/claude-2": " I'm Claude, an AI assistant created by Anthropic."
+        }
+    },
 ```
 
 llm.py: A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
