@@ -1,3 +1,8 @@
+```python
+responses = asyncio.run(
+    llm.complete(["What is the capital of France?"], models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
+)```
+
 ## Overview
 llm.py a very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
 
@@ -12,11 +17,6 @@ llm.py a very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, et
 ## Installation
 It's Just One File.
 
-## Usage
-```python
-responses = asyncio.run(
-    llm.complete(["What is the capital of France?"], models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
-)```
 
 Handling Responses:
 The responses are returned in a structured format, in the order you sent them.
