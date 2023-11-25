@@ -7,15 +7,27 @@ import asyncio
 import os
 import shelve
 import functools
-env_dir = os.path.expanduser('~/.env')if \
+from tenacity import retry, stop_after_attempt
+_env_dir = os.path.expanduser('~/.env')if \
     os.path.isfile(os.path.expanduser('~/.env')) else None
-dotenv.load_dotenv(env_dir)
-cache_file = "model_cache"
+dotenv.load_dotenv(_env_dir)
+_cache_file = "model_cache"
 
+_live_requests = {}
+def log(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        global _live_requests
+        _live_requests[func.__name__] = _live_requests.get(func.__name__, 0) + 1
+        print(_live_requests)
+        result = await func(*args, **kwargs)
+        _live_requests[func.__name__] -= 1
+        print(_live_requests)
+        return result
+    return wrapper
 
 def limit_concurrency(max_concurrent_tasks):
     semaphore = asyncio.Semaphore(max_concurrent_tasks)
-
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
@@ -24,7 +36,9 @@ def limit_concurrency(max_concurrent_tasks):
         return wrapper
     return decorator
 
-
+@limit_concurrency(10)
+@retry(stop=stop_after_attempt(3))
+@log
 async def replicate_request(input, model='mistral'):
     model_urls = {
         'mistral-7b': 'mistralai/mistral-7b-instruct-v0.1:83b6a56e7c828e667f21fd596c338fd4f0039b46bcfa18d973e8e70e455fda70'
@@ -36,7 +50,9 @@ async def replicate_request(input, model='mistral'):
     result = ''.join(output)
     return result
 
-
+@limit_concurrency(10)
+@retry(stop=stop_after_attempt(3))
+@log
 async def openai_request(input, model="gpt-3.5-turbo"):
     completion = await openai.ChatCompletion.acreate(
         model=model,
@@ -47,20 +63,21 @@ async def openai_request(input, model="gpt-3.5-turbo"):
     result = completion.choices[0].message.content
     return result
 
-
 @limit_concurrency(2)
+@retry(stop=stop_after_attempt(3))
+@log
 async def anthropic_request(input, model="claude-2"):
     client = anthropic.AsyncAnthropic()
     completion = await client.completions.create(
-        model=model,
-        max_tokens_to_sample=50,
+    model=model,
+    max_tokens_to_sample=50,
         prompt=f"{anthropic.HUMAN_PROMPT} {input}{anthropic.AI_PROMPT}",
     )
 
     return completion.completion
 
 
-async def complete(inputs, models=None, use_cache=False, concurrency_limit=10):
+async def complete(inputs, models=None, use_cache=False):
     if models is None:
         models = ["openai/gpt-3.5-turbo"]  # Default model if none specified
 
@@ -68,7 +85,7 @@ async def complete(inputs, models=None, use_cache=False, concurrency_limit=10):
     if not isinstance(inputs, list):
         inputs = [inputs]
     try:
-        cache = shelve.open(cache_file) if use_cache else None
+        cache = shelve.open(_cache_file) if use_cache else None
 
         tasks = []
         for input in inputs:
@@ -81,7 +98,7 @@ async def complete(inputs, models=None, use_cache=False, concurrency_limit=10):
                     continue
 
                 provider, model_name = model.split('/', 1)
-
+                
                 if provider == 'replicate':
                     task = replicate_request(input, model=model_name)
                 elif provider == 'openai':
