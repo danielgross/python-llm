@@ -27,4 +27,4 @@ llm.py: A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, e
 * It's Just One File.
 
 ## Installation
-It's Just One File.
+It's Just One File. You'll need a .env file with the various API keys, either in your directory or in ~/.env globally. 
