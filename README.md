@@ -5,7 +5,11 @@ responses = asyncio.run(
     models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b'])
 )
 # print(responses)
-[{"prompt":"What is the capital of France?", "responses":{"openai/gpt-3.5-turbo": "Paris", "replicate/mistral-7b": "Paris"}}, ...]
+[{"prompt":"What is the capital of France?",
+  "responses":
+        {"openai/gpt-3.5-turbo": "Paris",
+        "replicate/mistral-7b": "Paris"}
+    }, ...]
 ```
 
 llm.py: A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
