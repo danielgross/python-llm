@@ -1,17 +1,18 @@
 # Make calls to language models.
+import os
+import dotenv
+_env_dir = os.path.expanduser('~/.env')if \
+    os.path.isfile(os.path.expanduser('~/.env')) else None
+dotenv.load_dotenv(_env_dir)
+
 import replicate
 import openai
 import anthropic
-import dotenv
 import asyncio
-import os
 import shelve
 import functools
 import aiohttp
 from tenacity import retry, stop_after_attempt
-_env_dir = os.path.expanduser('~/.env')if \
-    os.path.isfile(os.path.expanduser('~/.env')) else None
-dotenv.load_dotenv(_env_dir)
 _cache_file = "model_cache"
 
 
@@ -154,11 +155,11 @@ def test():
                     "what is 2+2?", "what is the current date?"]
     models = [
         'openai/gpt-3.5-turbo',
+        'openai/gpt-4-1106-preview',
         'anthropic/claude-2',
         'replicate/mistral-7b',
         'pplx/pplx-70b-online',
         
-
     ]
     # Call the complete function with the test prompts
     responses = asyncio.run(
