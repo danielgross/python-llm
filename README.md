@@ -6,7 +6,7 @@ responses = asyncio.run(
     llm.complete(["What model are you?", "What is 2+2?"],
     models=['openai/gpt-3.5-turbo', 'replicate/mistral-7b', 'anthropic/claude-2'])
 )
-# print(responses)
+print(responses)
 [
     {
         "prompt": "what model are you?",
