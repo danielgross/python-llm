@@ -1,4 +1,6 @@
 ## Overview
+A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
+
 ```python
 responses = asyncio.run(
     llm.complete(["What model are you?", "What is 2+2?"],
@@ -13,10 +15,9 @@ responses = asyncio.run(
             "replicate/mistral-7b": "I am Mistral, a large language model trained by Mistral AI.",
             "anthropic/claude-2": " I'm Claude, an AI assistant created by Anthropic."
         }
-    },
+    }...
 ```
 
-llm.py: A very lightweight multiplexer for calling OpenAI, Anthropic, Mistral, etc all at once. It is a single file with minimal dependencies. 
 
 ## Features
 * Multiple Model Support: llm.py supports various models, including OpenAI's GPT-3.5, Replicate's Mistral, and Anthropic's Claude.
